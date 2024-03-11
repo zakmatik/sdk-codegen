@@ -24,6 +24,7 @@
 """
 import datetime
 import json
+import logging
 from typing import Any, MutableMapping, Optional, Sequence, Type, Union
 import urllib.parse
 
@@ -69,6 +70,7 @@ class APIMethods:
         self.deserialize = deserialize
         self.serialize = serialize
         self.transport = transport
+        self.logger = logging.getLogger(__name__)
 
     def _path(self, path: str) -> str:
         if path[0] == "/":
@@ -175,8 +177,11 @@ class APIMethods:
         transport_options: Optional[transport.TransportOptions] = None,
     ) -> TReturn:
         """POST method"""
+        self.logger.info("post1")
         params = self._convert_query_params(query_params) if query_params else None
+        self.logger.info("post2")
         serialized = self._get_serialized(body)
+        self.logger.info("post3")
         response = self.transport.request(
             transport.HttpMethod.POST,
             self._path(path),
@@ -185,6 +190,7 @@ class APIMethods:
             authenticator=self.auth.authenticate,
             transport_options=transport_options,
         )
+        self.logger.info("post4")
         return self._return(response, structure)
 
     def patch(
