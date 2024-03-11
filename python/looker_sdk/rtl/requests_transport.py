@@ -24,6 +24,7 @@
 """
 
 import logging
+import inspect
 from typing import cast, Callable, Dict, MutableMapping, Optional
 
 import requests
@@ -71,6 +72,7 @@ class RequestsTransport(transport.Transport):
                 timeout = transport_options["timeout"]
         self.logger.info("%s(%s) - timeout = %d", method.name, path, timeout)
         self.logger.info(headers)
+        self.logger.info(inspect.stack())
         try:
             resp = self.session.request(
                 method.name,
