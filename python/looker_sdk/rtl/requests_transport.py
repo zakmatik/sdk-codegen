@@ -69,7 +69,8 @@ class RequestsTransport(transport.Transport):
                 headers.update(transport_options["headers"])
             if transport_options.get("timeout"):
                 timeout = transport_options["timeout"]
-        self.logger.info("%s(%s)", method.name, path)
+        self.logger.info("%s(%s) - timeout = %d", method.name, path, timeout)
+        self.logger.info(headers)
         try:
             resp = self.session.request(
                 method.name,
@@ -80,6 +81,7 @@ class RequestsTransport(transport.Transport):
                 headers=headers,
                 timeout=timeout,
             )
+            self.logger.info("Finished Request, got status %d", resp.status_code)
         except IOError as exc:
             ret = transport.Response(
                 False,
@@ -87,17 +89,21 @@ class RequestsTransport(transport.Transport):
                 transport.ResponseMode.STRING,
             )
         else:
+            self.logger.info("Here")
             ret = transport.Response(
                 resp.ok,
                 resp.content,
                 transport.response_mode(resp.headers.get("content-type")),
             )
+            self.logger.info("Here2")
             encoding = cast(
                 Optional[str], requests.utils.get_encoding_from_headers(resp.headers)
             )
             if encoding:
                 ret.encoding = encoding
+            self.logger.info("Here2")
 
+        self.logger.info("RETURNING")
         return ret
 
 
