@@ -104,6 +104,7 @@ class RequestsTransport(transport.Transport):
             self.logger.info("Here2")
 
         self.logger.info("RETURNING")
+        self.logger.info(ret)
         return ret
 
 
